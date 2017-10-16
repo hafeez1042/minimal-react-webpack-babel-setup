@@ -1,18 +1,31 @@
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const webpack = require('webpack');
+
 module.exports = {
-  entry: [
-    'webpack-dev-server/client?http://localhost:8080',
-    'webpack/hot/only-dev-server',
-    './src/index.js'
-  ],
+  entry: {
+    'app': [
+      'babel-polyfill',
+      'react-hot-loader/patch',
+      './src/index'
+    ]
+  },
   module: {
-    loaders: [{
-      test: /\.jsx?$/,
-      exclude: /node_modules/,
-      loader: 'react-hot-loader!babel-loader'
-    }]
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: 'babel-loader',
+      }
+    ]
   },
   resolve: {
-    extensions: ['*', '.js', '.jsx']
+    extensions: ['*', '.js', '.jsx'],
+    modules: [
+      path.resolve(__dirname + '/src'),
+      path.resolve(__dirname + '/node_modules'),
+    ],
   },
   output: {
     path: __dirname + '/dist',
@@ -22,5 +35,13 @@ module.exports = {
   devServer: {
     contentBase: './dist',
     hot: true
-  }
+  },
+  plugins: [
+    new CleanWebpackPlugin(['dist']),
+    new HtmlWebpackPlugin({
+      title: 'Hot Module Replacement',
+      template: 'src/template.ejs'
+    }),
+    new webpack.HotModuleReplacementPlugin()
+  ],
 };

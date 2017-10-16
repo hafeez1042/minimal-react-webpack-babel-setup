@@ -1,11 +1,29 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {hydrate} from 'react-dom';
+import { AppContainer } from 'react-hot-loader'
 
-const title = 'My Minimal React Webpack Babel Setup';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 
-ReactDOM.render(
-  <div>{title}</div>,
-  document.getElementById('app')
-);
+import reducers from 'reducers';
+import Routes from 'Routes';
 
-module.hot.accept();
+const store = createStore(reducers, {}, applyMiddleware(thunk));
+const render = Component => {
+  hydrate(
+    <AppContainer>
+      <Provider store={store}>
+        <Component />
+      </Provider >
+    </AppContainer>,
+    document.getElementById('root'),
+  );
+};
+
+render(Routes);
+
+// Webpack Hot Module Replacement API
+if (module.hot) {
+  module.hot.accept('Routes', () => { render(Routes); });
+}
