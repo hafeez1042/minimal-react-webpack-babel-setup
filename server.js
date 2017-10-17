@@ -3,7 +3,8 @@ const WebpackDevServer = require('webpack-dev-server');
 const config = require('./webpack.config');
 
 const options = {
-  contentBase: '.',
+  historyApiFallback: true,
+  contentBase: './',
   hot: true,
   host: 'localhost',
 };
